@@ -2,23 +2,20 @@ from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import numpy as np
 import math
-import csv
 import folium
-import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
 
-# Ensure the upload folder exists
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+# Cache to store data in memory
+cache = {
+    'excel_data': None,
+    'assignments': {}
+}
 
-# Route for the landing page
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# Route for the upload page
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -28,12 +25,11 @@ def upload_file():
         if file.filename == '':
             return redirect(request.url)
         if file:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'smart_route_optimization.xlsx')
-            file.save(file_path)
+            # Read Excel directly into memory
+            cache['excel_data'] = pd.read_excel(file, sheet_name="Shipments_Data")
             return redirect(url_for('select_timeslot'))
     return render_template('upload.html')
 
-# Route for the select timeslot page
 @app.route('/select_timeslot', methods=['GET', 'POST'])
 def select_timeslot():
     if request.method == 'POST':
@@ -41,45 +37,39 @@ def select_timeslot():
         return redirect(url_for('show_trips', timeslot=timeslot))
     return render_template('select_timeslot.html')
 
-# Route for the trips page
 @app.route('/trips/<timeslot>')
 def show_trips(timeslot):
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'smart_route_optimization.xlsx')
-
-    # Read the Excel file
-    shipments_df = pd.read_excel(file_path, sheet_name="Shipments_Data")
+    shipments_df = cache['excel_data']
+    if shipments_df is None:
+        return redirect(url_for('upload_file'))
 
     store_lat, store_lon = shipments_df.iloc[0]['Latitude'], shipments_df.iloc[0]['Longitude']
-
     df_timeslot = shipments_df[shipments_df['Delivery Timeslot'] == timeslot]
     df_timeslot_with_shop = insert_shop_location(df_timeslot, store_lat, store_lon)
     dist_matrix = calculate_distance_matrix_with_shop(df_timeslot_with_shop)
-    dist_matrix_df = pd.DataFrame(dist_matrix, index=df_timeslot_with_shop['Shipment ID'],
-                                  columns=df_timeslot_with_shop['Shipment ID'])
-    dist_matrix_file = os.path.join(app.config['UPLOAD_FOLDER'], f'dist_matrix_{timeslot.replace(":", "_")}.csv')
-    dist_matrix_df.to_csv(dist_matrix_file)
-
+    
+    headers = ['Shop'] + df_timeslot['Shipment ID'].astype(str).tolist()
+    
     vehicles = [
         {"type": "3W", "count": 50, "capacity": 5, "max_radius": 15, "max_trip_time": 240},
         {"type": "4W-EV", "count": 25, "capacity": 8, "max_radius": 20, "max_trip_time": 300},
         {"type": "4W", "count": float('inf'), "capacity": 25, "max_radius": float('inf'), "max_trip_time": 480}
     ]
 
-    headers, distance_matrix = parse_distance_matrix(dist_matrix_file)
-    assignments = assign_shipments(headers, distance_matrix, vehicles)
-    assignments_file = os.path.join(app.config['UPLOAD_FOLDER'], f'trip_assignments_{timeslot.replace(":", "_")}.csv')
-    save_to_csv(assignments, assignments_file)
+    assignments = assign_shipments(headers, dist_matrix.tolist(), vehicles)
+    cache['assignments'][timeslot] = assignments
 
     return render_template('trips.html', assignments=assignments, timeslot=timeslot)
 
-# Route for the map page
 @app.route('/map/<timeslot>/<int:index>')
 def show_map(timeslot, index):
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'smart_route_optimization.xlsx')
-    shipments_df = pd.read_excel(file_path, sheet_name="Shipments_Data")
-    assignments_file = os.path.join(app.config['UPLOAD_FOLDER'], f'trip_assignments_{timeslot.replace(":", "_")}.csv')
-    assignments = pd.read_csv(assignments_file)
-    route = assignments.iloc[index]['Route'].split(' -> ')
+    shipments_df = cache['excel_data']
+    assignments = cache['assignments'].get(timeslot, [])
+    
+    if shipments_df is None or not assignments:
+        return redirect(url_for('upload_file'))
+    
+    route = assignments[index]['Route'].split(' -> ')
     map_html = generate_map(route, shipments_df)
     return render_template('map.html', map_html=map_html, timeslot=timeslot)
 
@@ -110,15 +100,6 @@ def calculate_distance_matrix_with_shop(df):
             dist = haversine(lat1, lon1, lat2, lon2)
             dist_matrix[i, j] = dist_matrix[j, i] = dist
     return dist_matrix
-
-def parse_distance_matrix(file_path):
-    with open(file_path, 'r') as file:
-        reader = csv.reader(file)
-        headers = next(reader)
-        distance_matrix = []
-        for row in reader:
-            distance_matrix.append([float(x) for x in row[1:]])
-    return headers, distance_matrix
 
 def assign_shipments(headers, distance_matrix, vehicles):
     shipments = headers[1:]  # Exclude the shop from shipments
@@ -210,12 +191,6 @@ def assign_shipments(headers, distance_matrix, vehicles):
 
     return vehicle_assignments
 
-def save_to_csv(results, output_file):
-    with open(output_file, mode='w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=results[0].keys())
-        writer.writeheader()
-        writer.writerows(results)
-
 def generate_map(route, shipments_df):
     m = folium.Map(location=[shipments_df.iloc[0]['Latitude'], shipments_df.iloc[0]['Longitude']], zoom_start=12)
     folium.Marker(
@@ -249,5 +224,4 @@ def generate_map(route, shipments_df):
     return m._repr_html_()
 
 if __name__ == '__main__':
-    # app.run(port=5001)  # Use a different port if needed
     app.run(host="0.0.0.0", port=5000)
