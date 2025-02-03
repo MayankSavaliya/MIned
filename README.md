@@ -1,6 +1,6 @@
 # 🚚 Smart Route Optimization System
 
-> 🌟 Intelligent delivery route optimization using advanced algorithms and real-time mapping
+> 🌟 Intelligent delivery route optimization using advanced algorithms and real-time 
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)
