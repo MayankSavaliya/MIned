@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Excel File</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(-45deg, #13ccf1, #1687c5, #13ccf1, #1687c5);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-100vh) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            width: 90%;
+            max-width: 500px;
+            z-index: 2;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background: transparent;
+            border-bottom: 2px solid rgba(0, 123, 255, 0.1);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #13ccf1, #1687c5);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(19, 204, 241, 0.3);
+        }
+
+        .upload-input {
+            border: 2px dashed #13ccf1;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(19, 204, 241, 0.05);
+        }
+
+        .upload-input:hover {
+            background: rgba(19, 204, 241, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-input input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            cursor: pointer;
+        }
+
+        .upload-label {
+            cursor: pointer;
+            color: #1687c5;
+            font-weight: 500;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .title {
+            color: #1687c5;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Elements -->
+    <div class="floating-bubble" style="width: 150px; height: 150px; top: -75px; left: 20%;"></div>
+    <div class="floating-bubble" style="width: 100px; height: 100px; top: -50px; right: 15%;"></div>
+    <div class="floating-bubble" style="width: 80px; height: 80px; bottom: -40px; left: 10%;"></div>
+
+    <!-- Centered Card -->
+    <div class="card">
+        <div class="card-header">
+            <h1 class="title"><i class="fas fa-cloud-upload-alt"></i> Upload Excel File</h1>
+            <p class="subtitle">Supported format: .xlsx</p>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <div class="upload-input position-relative">
+                        <label class="upload-label">
+                            <span class="d-block mb-2">Click to choose file</span>
+                            <i class="fas fa-cloud-upload-alt fa-2x"></i>
+                            <input type="file" class="form-control" name="file" accept=".xlsx" required>
+                        </label>
+                        <div class="file-name"></div>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="me-2">Process File</span>
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Display file name when selected
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            const fileName = e.target.files[0].name;
+            document.querySelector('.file-name').textContent = `Selected file: ${fileName}`;
+        });
+    </script>
+</body>
+</html>

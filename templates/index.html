@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwiftRoute - Intelligent Route Optimization</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        line-height: 1.6;
+      }
+
+      /* Navigation */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 6rem;
+        background-color: #fff;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      .logo span {
+        color: #3498db;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #2c3e50;
+        font-weight: 500;
+        transition: color 0.3s;
+        cursor: pointer;
+      }
+
+      .nav-links a:hover {
+        color: #3498db;
+      }
+
+      /* Section Spacing */
+      section {
+        padding: 5rem 2rem;
+        margin-top: 80px;
+      }
+
+      /* Hero Section */
+      .hero {
+        height: 100vh;
+        background: linear-gradient(
+            rgba(52, 152, 219, 0.8),
+            rgba(52, 152, 219, 0.8)
+          ),
+          url("https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc")
+            center/cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        padding: 0 1rem;
+      }
+
+      .hero-content h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+      }
+
+      .cta-button {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        background-color: #fff;
+        color: #3498db;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        text-decoration: none;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-3px);
+      }
+
+      /* Features Section */
+      .features {
+        background-color: #f9f9f9;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        color: #3498db;
+        margin-bottom: 1rem;
+      }
+
+      /* Footer */
+      footer {
+        background-color: #2c3e50;
+        color: white;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      /* Hide Sections */
+      .hidden {
+        display: none;
+      }
+
+      /* Back Button */
+      .back-button {
+        display: none;
+        margin: 20px auto;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* Contact Person Section */
+      .contact-person {
+        background-color: #f1f1f1;
+        padding: 2rem;
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      .contact-person h3 {
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+      }
+
+      .contact-person a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .contact-person a:hover {
+        text-decoration: underline;
+      }
+
+      /* Remove list bullets */
+      .team-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .team-list li {
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo">Swift<span>Route</span></div>
+      <div class="nav-links">
+        <a onclick="showSection('home')">Home</a>
+        <a onclick="showSection('features')">Features</a>
+        <a onclick="showSection('about')">About</a>
+        <a onclick="showSection('contact')">Contact</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <h1>Optimize Your Routes Smartly</h1>
+        <p>Save time and reduce costs with AI-powered route optimization</p>
+        <a href="{{ url_for('upload_file') }}" class="cta-button"
+          >Get Started</a
+        >
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features hidden" id="features">
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-route feature-icon"></i>
+          <h3>Optimal Routes</h3>
+          <p>
+            Get the most efficient routes calculated using advanced algorithms
+          </p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-clock feature-icon"></i>
+          <h3>Accessible Anytime</h3>
+          <p>
+            Our website is available 24/7, ensuring seamless access whenever you
+            need it.
+          </p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-chart-line feature-icon"></i>
+          <h3>Analytics</h3>
+          <p>Detailed reports and performance metrics for your routes</p>
+        </div>
+      </div>
+      <button class="back-button" onclick="showSection('home')">
+        Back to Home
+      </button>
+    </section>
+
+    <!-- About Section -->
+    <section class="features hidden" id="about">
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-users feature-icon"></i>
+          <h3>About SwiftRoute</h3>
+          <p style="text-align: justify">
+            SwiftRoute is an innovative AI-powered route optimization platform
+            designed to revolutionize the way businesses manage their logistics
+            and transportation needs. Our mission is to help companies save
+            time, reduce costs, and improve efficiency by providing the most
+            optimal routes for their operations. With SwiftRoute, you can leverage cutting-edge algorithms and
+            machine learning techniques to analyze various factors such as
+            traffic conditions, weather, road closures, and delivery windows.
+            This ensures that your routes are not only efficient but also
+            adaptable to real-time changes. Our platform is user-friendly and accessible 24/7, making it easy
+            for businesses of all sizes to integrate SwiftRoute into their daily
+            operations. Whether you're managing a small delivery service or a
+            large-scale logistics network, SwiftRoute is here to help you
+            achieve your goals. Join the growing number of businesses that trust SwiftRoute to
+            optimize their routes and enhance their operational efficiency.
+            Experience the future of logistics with SwiftRoute today!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="features hidden" id="contact">
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-user feature-icon"></i>
+          <h3>Team NovaHackers</h3>
+          <ul class="team-list">
+            <li>Nilam Solanki</li>
+            <li>Vignat Tank</li>
+            <li>Jishan Thobhani</li>
+            <li>Dipali Vala</li>
+            <li>Mayank Savaliya</li>
+          </ul>
+        </div>
+      </div>
+      <div class="contact-person">
+        <h3>Contact Person</h3>
+        <p>Nilam Solanki</p>
+        <a href="mailto:22BCE342@nirmauni.ac.in">22BCE342@nirmauni.ac.in</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 SwiftRoute. All rights reserved.</p>
+    </footer>
+
+    <script>
+      function showSection(section) {
+        document
+          .querySelectorAll("section")
+          .forEach((sec) => sec.classList.add("hidden"));
+        document.getElementById(section).classList.remove("hidden");
+
+        if (section === "features") {
+          document.querySelector(".back-button").style.display = "block";
+        } else {
+          document.querySelector(".back-button").style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
