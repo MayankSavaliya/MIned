@@ -77,7 +77,7 @@ The project addresses several key challenges in last-mile delivery optimization:
 1. Clone the repository:
 ```bash
 git clone https://github.com/MayankSavaliya/SwiftRoute-MINeD.git
-cd Mined-Hackathon
+cd SwiftRoute-MINeD
 ```
 
 2. Create a virtual environment:
