@@ -8,7 +8,6 @@
 [![NumPy](https://img.shields.io/badge/NumPy-1.26.2-lightblue.svg)](https://numpy.org/)
 [![Folium](https://img.shields.io/badge/Folium-0.15.1-brightgreen.svg)](https://python-visualization.github.io/folium/)
 [![OpenPyXL](https://img.shields.io/badge/OpenPyXL-3.1.2-blue.svg)](https://openpyxl.readthedocs.io/)
-[![Gunicorn](https://img.shields.io/badge/Gunicorn-21.2.0-green.svg)](https://gunicorn.org/)
 
 ## 🌐 Live Demo
 
