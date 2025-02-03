@@ -9,7 +9,7 @@
 [![Folium](https://img.shields.io/badge/Folium-0.15.1-brightgreen.svg)](https://python-visualization.github.io/folium/)
 [![OpenPyXL](https://img.shields.io/badge/OpenPyXL-3.1.2-blue.svg)](https://openpyxl.readthedocs.io/)
 
-## 🌐 Live Demo
+## 🌐 Live Demo of the Project
 
 Try out the live application: [SwiftRoute Demo](https://swiftroute.onrender.com)
 
