@@ -249,4 +249,5 @@ def generate_map(route, shipments_df):
     return m._repr_html_()
 
 if __name__ == '__main__':
-    app.run(port=5001)  # Use a different port if needed
+    # app.run(port=5001)  # Use a different port if needed
+    app.run(host="0.0.0.0", port=5000)
