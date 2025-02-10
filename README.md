@@ -45,7 +45,7 @@ The project addresses several key challenges in last-mile delivery optimization:
   - Optimize resource allocation
   - Reduce operational costs
 
-## ✨ Feature
+## ✨ Features
 
 🔄 Upload Excel file with shipment data  
 📊 Select delivery timeslots for route planning  
